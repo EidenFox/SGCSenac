@@ -37,14 +37,23 @@ public class PasswordManager {
                     System.out.println("\n--- Cadastrar Novo Usuário ---");
                     scan.nextLine();
 
-                    System.out.print("Digite o Nome do Usuário: ");
-                    novoUsuario.setNome(scan.nextLine());
-                    System.out.print("Digite a Senha: ");
-                    String senhaCadastro = scan.nextLine();
+                    System.out.println("Digite seu Numero de Identificação (Crachá): ");
+                    novoUsuario.setNumIdentificacao(scan.nextInt());
+                    System.out.print("Digite seu Nome (max 45 caracteres): ");
+                    novoUsuario.setNomeUsuario(scan.nextLine());
+                    System.out.println("Digite seu Email de login: ");
+                    novoUsuario.setEmail(scan.nextLine());
+                    System.out.println("Digite seu telefone: ");
+                    novoUsuario.setTelefone(scan.nextLine());
 
+                    //Cadastro da senha
+                    System.out.print("Digite sua Senha: ");
+                    String senhaCadastro = scan.nextLine();
                     novoUsuario.setSenha(hashPassword(senhaCadastro));
 
-                    if (usuarioDao.inserir(novoUsuario)) {
+                    novoUsuario.setCargo(1); //Novo usuario sempre cargo 1, pode ser alterado para 0 (administrador) depois
+
+                    if (usuarioDao.cadastrarUsuario(novoUsuario)) {
                         System.out.println("Usuário cadastrado com sucesso!");
                     }else{
                         System.out.println("Erro ao cadastrar Usuário");
@@ -58,20 +67,24 @@ public class PasswordManager {
                     scan.nextLine();
 
                     Usuario usuarioAtt = new Usuario();
-                    usuarioAtt.setId(id);
+                    usuarioAtt.setIdUsuario(id);
 
-                    System.out.print("Digite o novo Nome: ");
-                    usuarioAtt.setNome(scan.nextLine());
+                    System.out.println("Digite o Numero de Identificação (Crachá): ");
+                    usuarioAtt.setNumIdentificacao(scan.nextInt());
+                    System.out.print("Digite o Nome (max 45 caracteres): ");
+                    usuarioAtt.setNomeUsuario(scan.nextLine());
+                    System.out.println("Digite o Email de login: ");
+                    usuarioAtt.setEmail(scan.nextLine());
+                    System.out.println("Digite o telefone: ");
+                    usuarioAtt.setTelefone(scan.nextLine());
+                    System.out.println("Selecione o cargo: [0]Administrador | [1]Usuario");
+                    usuarioAtt.setCargo(scan.nextInt());
 
-                    System.out.print("Digite a nova Senha: ");
-                    String senhaNova = scan.nextLine();
 
-                    usuarioAtt.setSenha(hashPassword(senhaNova));
-
-                    if (usuarioDao.atualizar(usuarioAtt)) {
+                    if (usuarioDao.editarUsuario(usuarioAtt)) {
                         System.out.println("Usuário atualizado com sucesso!");
                     } else {
-                        System.out.println("Erro ao atualizar o usuário.");
+                        System.out.println("Erro ao editarUsuario o usuário.");
                     }
                     break;
 
@@ -83,31 +96,32 @@ public class PasswordManager {
                     int op2 = scan.nextInt();
 
                     List<Usuario> lista = null;
-                    if (op2 == 1) lista = usuarioDao.listar2(1);
-                    if (op2 == 2) lista = usuarioDao.listar2(0);
+                    if (op2 == 1) lista = usuarioDao.listarEspecial(1);
+                    if (op2 == 2) lista = usuarioDao.listarEspecial(0);
                     if (op2 == 3) lista = usuarioDao.listarUsuarios();
                     if (lista == null){
                         System.out.println("Nenhum usuário Encontrado.");
                         break;
                     }
                     for (Usuario u : lista) {
-                        System.out.println("ID: " + u.getId() + " - Nome: " + u.getNome() + " - Estado: " + u.getState());
+                        // EDITAR ESSE SOUT PARA EXIBIR OS DADOS CORRETOS
+                        System.out.println("ID: " + u.getIdUsuario() + " - Nome: " + u.getNomeUsuario() + " - Estado: " + u.getEstado());
                     }
                     break;
 
                 case 4:
                     System.out.println("\n--- Inativar Usuário ---");
-                    System.out.print("Digite o ID do usuário que deseja excluir: ");
+                    System.out.print("Digite o ID do usuário que deseja Inativar: ");
                     id = scan.nextInt();
 
                     if (usuarioDao.changeState(0, id)) {
-                        System.out.println("Usuário desativado com sucesso!");
+                        System.out.println("Usuário Inativado com sucesso!");
                     }
                     break;
 
                 case 5:
                     System.out.println("\n--- Reativar Usuário ---");
-                    System.out.print("Digite o ID do usuário que deseja excluir: ");
+                    System.out.print("Digite o ID do usuário que deseja Ativar: ");
                     id = scan.nextInt();
 
                     if (usuarioDao.changeState(1, id)) {
@@ -118,10 +132,10 @@ public class PasswordManager {
                 case 6:
                     System.out.println("\n--- Fazer Login ---");
                     scan.nextLine();
-                    System.out.print("Digite o Nome do Usuário: ");
-                    String nomeLogin = scan.nextLine();
+                    System.out.print("Digite o Email do Usuário: ");
+                    String emailLogin = scan.nextLine();
 
-                    Usuario usuarioEncontrado = usuarioDao.buscarPorNome(nomeLogin);
+                    Usuario usuarioEncontrado = usuarioDao.buscarPorEmail(emailLogin);
 
                     if (usuarioEncontrado != null) {
                         System.out.print("Digite a Senha: ");
