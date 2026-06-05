@@ -1,0 +1,34 @@
+package DAO;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Properties;
+
+public class Conexao {
+
+   public static Connection conectar() {
+        Properties props = new Properties();
+
+        try (InputStream input = Conexao.class.getClassLoader().getResourceAsStream("db.properties")) {
+            if (input == null) {
+                throw new RuntimeException("Arquivo db.properties não encontrado em src/main/resources/");
+            }
+
+            props.load(input);
+
+            String url = props.getProperty("db.url");
+            String user = props.getProperty("db.user");
+            String password = props.getProperty("db.password");
+
+            return DriverManager.getConnection(url, user, password);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao carregar o arquivo db.properties.", e);
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro na conexão com o banco de dados", e);
+        }
+    }
+}
