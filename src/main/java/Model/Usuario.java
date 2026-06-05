@@ -1,7 +1,7 @@
 package Model;
 
 public class Usuario {
-    private int idUsuario;
+    private long idUsuario;
     private int numIdentificacao;
     private String nomeUsuario;
     private String email;
@@ -18,18 +18,18 @@ public class Usuario {
         this.senha = senha;
     }
 
-   public Usuario(int idUsuario, String nomeUsuario, String senha, int estado) {
+   public Usuario(long idUsuario, String nomeUsuario, String senha, int estado) {
         this.idUsuario = idUsuario;
         this.nomeUsuario = nomeUsuario;
         this.senha = senha;
         this.estado = estado;
     }
 
-    public int getIdUsuario() {
+    public long getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(int idUsuario) {
+    public void setIdUsuario(long idUsuario) {
         this.idUsuario = idUsuario;
     }
 
@@ -54,7 +54,11 @@ public class Usuario {
     }
 
     public void setEmail(String email) {
-        this.email = email.toLowerCase().trim();
+        if (email == null || email.trim().isEmpty()) {
+            this.email = null;
+        } else {
+            this.email = email.trim().toLowerCase();
+        }
     }
 
     public String getTelefone() {
@@ -62,7 +66,11 @@ public class Usuario {
     }
 
     public void setTelefone(String telefone) {
-        this.telefone = telefone;
+        if (telefone == null || telefone.trim().isEmpty()) {
+            this.telefone = null;
+        } else {
+            this.telefone = telefone;
+        }
     }
 
     public int getCargo() {

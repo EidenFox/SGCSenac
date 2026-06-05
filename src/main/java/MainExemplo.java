@@ -5,7 +5,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.util.List;
 import java.util.Scanner;
 
-public class PasswordManager {
+public class MainExemplo {
 
     public static String hashPassword(String plainPassword) {
         return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
@@ -18,7 +18,8 @@ public class PasswordManager {
     public static void main(String[] args) {
         UsuarioDao usuarioDao = new UsuarioDao();
         Scanner scan = new Scanner(System.in);
-        int op, id;
+        int op;
+        long id;
 
         do {
             System.out.println("--------MENU--------");
@@ -39,6 +40,8 @@ public class PasswordManager {
 
                     System.out.println("Digite seu Numero de Identificação (Crachá): ");
                     novoUsuario.setNumIdentificacao(scan.nextInt());
+                    scan.nextLine();
+
                     System.out.print("Digite seu Nome (max 45 caracteres): ");
                     novoUsuario.setNomeUsuario(scan.nextLine());
                     System.out.println("Digite seu Email de login: ");
@@ -63,7 +66,7 @@ public class PasswordManager {
                 case 2:
                     System.out.println("\n--- Editar Usuário ---");
                     System.out.print("Digite o ID do usuário que deseja Editar: ");
-                    id = scan.nextInt();
+                    id = scan.nextLong();
                     scan.nextLine();
 
                     Usuario usuarioAtt = new Usuario();
@@ -71,17 +74,17 @@ public class PasswordManager {
 
                     System.out.println("Digite o Numero de Identificação (Crachá): ");
                     usuarioAtt.setNumIdentificacao(scan.nextInt());
+                    scan.nextLine();
+
                     System.out.print("Digite o Nome (max 45 caracteres): ");
                     usuarioAtt.setNomeUsuario(scan.nextLine());
                     System.out.println("Digite o Email de login: ");
                     usuarioAtt.setEmail(scan.nextLine());
-                    System.out.println("Digite o telefone: ");
-                    usuarioAtt.setTelefone(scan.nextLine());
                     System.out.println("Selecione o cargo: [0]Administrador | [1]Usuario");
                     usuarioAtt.setCargo(scan.nextInt());
 
 
-                    if (usuarioDao.editarUsuario(usuarioAtt)) {
+                    if (usuarioDao.editarUsuario(usuarioAtt, -1)) { // no update PRECISA do ID da pessoa que está logada fazendo a alteração por conta do log
                         System.out.println("Usuário atualizado com sucesso!");
                     } else {
                         System.out.println("Erro ao editarUsuario o usuário.");
@@ -112,9 +115,9 @@ public class PasswordManager {
                 case 4:
                     System.out.println("\n--- Inativar Usuário ---");
                     System.out.print("Digite o ID do usuário que deseja Inativar: ");
-                    id = scan.nextInt();
+                    id = scan.nextLong();
 
-                    if (usuarioDao.changeState(0, id)) {
+                    if (usuarioDao.changeState(0, id, -1)) {    // no update PRECISA do ID da pessoa que está logada fazendo a alteração por conta do log
                         System.out.println("Usuário Inativado com sucesso!");
                     }
                     break;
@@ -122,9 +125,9 @@ public class PasswordManager {
                 case 5:
                     System.out.println("\n--- Reativar Usuário ---");
                     System.out.print("Digite o ID do usuário que deseja Ativar: ");
-                    id = scan.nextInt();
+                    id = scan.nextLong();
 
-                    if (usuarioDao.changeState(1, id)) {
+                    if (usuarioDao.changeState(1, id, -1)) {    // no update PRECISA do ID da pessoa que está logada fazendo a alteração por conta do log
                         System.out.println("Usuário Ativo com sucesso!");
                     }
                     break;

@@ -30,8 +30,8 @@ public class UsuarioDao {
         }
     }
 
-    public boolean editarUsuario(Usuario usuario) {
-        String sql = "UPDATE Usuario SET nomeUsuario = ?, email = ?, telefone = ?, cargo = ? WHERE id = ?";
+    public boolean editarUsuario(Usuario usuario, long usuarioLogado) {
+        String sql = "UPDATE Usuario SET nomeUsuario = ?, email = ?, telefone = ?, cargo = ?, updateID = ? WHERE idUsuario = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -39,6 +39,8 @@ public class UsuarioDao {
             stmt.setString(2, usuario.getEmail());
             stmt.setString(3, usuario.getTelefone());
             stmt.setInt(4, usuario.getCargo());
+            stmt.setLong(5, usuarioLogado);  // ID DO USUARIO LOGADO (quem está fazendo a edição)
+            stmt.setLong(6, usuario.getIdUsuario());
             stmt.executeUpdate();
 
             return true;
@@ -49,13 +51,14 @@ public class UsuarioDao {
         }
     }
 
-    public boolean changeState(int state, int id) {
-        String sql = "UPDATE Usuario SET estado = ? WHERE id = ?";
+    public boolean changeState(int state, long idAlvo, long idLogado) {
+        String sql = "UPDATE Usuario SET estado = ?, updateID = ? WHERE idUsuario = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, state);
-            stmt.setInt(2, id);
+            stmt.setLong(2, idLogado);  // Para o LOG
+            stmt.setLong(3, idAlvo);    // Para o WHERE
             stmt.executeUpdate();
 
             return true;
@@ -77,7 +80,7 @@ public class UsuarioDao {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     Usuario u = new Usuario();
-                    u.setIdUsuario(rs.getInt("idUsuario"));
+                    u.setIdUsuario(rs.getLong("idUsuario"));
                     u.setNumIdentificacao(rs.getInt("numIdentificacao"));
                     u.setNomeUsuario(rs.getString("nomeUsuario"));
                     u.setEmail(rs.getString("email"));
@@ -95,17 +98,17 @@ public class UsuarioDao {
         return null;
     }
 
-    public Usuario buscarPorId(int id) {
+    public Usuario buscarPorId(long id) {
         String sql = "SELECT * FROM Usuario WHERE idUsuario = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
+            stmt.setLong(1, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     Usuario u = new Usuario();
-                    u.setIdUsuario(rs.getInt("idUsuario"));
+                    u.setIdUsuario(rs.getLong("idUsuario"));
                     u.setNumIdentificacao(rs.getInt("numIdentificacao"));
                     u.setNomeUsuario(rs.getString("nomeUsuario"));
                     u.setEmail(rs.getString("email"));
@@ -125,7 +128,7 @@ public class UsuarioDao {
 
     public List<Usuario> listarUsuarios() {
         List<Usuario> usuarios = new ArrayList<>();
-        String sql = "SELECT idUsuario, numIdentificacao, nomeUsuario, email, telefone, cargo, estado FROM Usuario ORDER BY id ASC"; //remover "senha", está aqui apenas para fins de teste
+        String sql = "SELECT idUsuario, numIdentificacao, nomeUsuario, email, telefone, cargo, estado FROM Usuario ORDER BY idUsuario ASC"; //remover "senha", está aqui apenas para fins de teste
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -133,7 +136,7 @@ public class UsuarioDao {
 
             while (rs.next()) {
                 Usuario u = new Usuario();
-                u.setIdUsuario(rs.getInt("idUsuario"));
+                u.setIdUsuario(rs.getLong("idUsuario"));
                 u.setNumIdentificacao(rs.getInt("numIdentificacao"));
                 u.setNomeUsuario(rs.getString("nomeUsuario"));
                 u.setEmail(rs.getString("email"));
