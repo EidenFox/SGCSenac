@@ -1,7 +1,7 @@
 package Model;
 
 public class Usuario {
-    private long idUsuario;
+    private Long idUsuario;
     private int numIdentificacao;
     private String nomeUsuario;
     private String email;
@@ -18,18 +18,18 @@ public class Usuario {
         this.senha = senha;
     }
 
-   public Usuario(long idUsuario, String nomeUsuario, String senha, int estado) {
+   public Usuario(Long idUsuario, String nomeUsuario, String senha, int estado) {
         this.idUsuario = idUsuario;
         this.nomeUsuario = nomeUsuario;
         this.senha = senha;
         this.estado = estado;
     }
 
-    public long getIdUsuario() {
+    public Long getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(long idUsuario) {
+    public void setIdUsuario(Long idUsuario) {
         this.idUsuario = idUsuario;
     }
 

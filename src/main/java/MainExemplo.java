@@ -11,11 +11,7 @@ public class MainExemplo {
         return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
     }
 
-    public static boolean checkPassword(String plainPassword, String storedHash) {
-        return BCrypt.checkpw(plainPassword, storedHash);
-    }
-
-    public static void main(String[] args) {
+    static void main() {
         UsuarioDao usuarioDao = new UsuarioDao();
         Scanner scan = new Scanner(System.in);
         int op;
@@ -84,7 +80,7 @@ public class MainExemplo {
                     usuarioAtt.setCargo(scan.nextInt());
 
 
-                    if (usuarioDao.editarUsuario(usuarioAtt, -1)) { // no update PRECISA do ID da pessoa que está logada fazendo a alteração por conta do log
+                    if (usuarioDao.editarUsuario(usuarioAtt, -1L)) { // no update PRECISA do ID da pessoa que está logada fazendo a alteração por conta do log
                         System.out.println("Usuário atualizado com sucesso!");
                     } else {
                         System.out.println("Erro ao editarUsuario o usuário.");
@@ -107,8 +103,7 @@ public class MainExemplo {
                         break;
                     }
                     for (Usuario u : lista) {
-                        // EDITAR ESSE SOUT PARA EXIBIR OS DADOS CORRETOS
-                        System.out.println("ID: " + u.getIdUsuario() + " - Nome: " + u.getNomeUsuario() + " - Estado: " + u.getEstado());
+                        System.out.println("ID: " + u.getIdUsuario() + " - Crachá: " + u.getNumIdentificacao() + " - Nome: " + u.getNomeUsuario() + " - Estado: " + u.getEstado());
                     }
                     break;
 
@@ -117,7 +112,7 @@ public class MainExemplo {
                     System.out.print("Digite o ID do usuário que deseja Inativar: ");
                     id = scan.nextLong();
 
-                    if (usuarioDao.changeState(0, id, -1)) {    // no update PRECISA do ID da pessoa que está logada fazendo a alteração por conta do log
+                    if (usuarioDao.changeState(0, id, -1L)) {    // no update PRECISA do ID da pessoa que está logada fazendo a alteração por conta do log
                         System.out.println("Usuário Inativado com sucesso!");
                     }
                     break;
@@ -127,7 +122,7 @@ public class MainExemplo {
                     System.out.print("Digite o ID do usuário que deseja Ativar: ");
                     id = scan.nextLong();
 
-                    if (usuarioDao.changeState(1, id, -1)) {    // no update PRECISA do ID da pessoa que está logada fazendo a alteração por conta do log
+                    if (usuarioDao.changeState(1, id, -1L)) {    // no update PRECISA do ID da pessoa que está logada fazendo a alteração por conta do log
                         System.out.println("Usuário Ativo com sucesso!");
                     }
                     break;
@@ -144,11 +139,9 @@ public class MainExemplo {
                         System.out.print("Digite a Senha: ");
                         String senhaLogin = scan.nextLine();
 
-                        if (checkPassword(senhaLogin, usuarioEncontrado.getSenha())) {
-                            System.out.println("Login bem-sucedido!");
-                        } else {
-                            System.out.println("Senha incorreta.");
-                        }
+                        if (usuarioDao.checarSenha(senhaLogin, usuarioEncontrado.getSenha())) System.out.println("Login bem-sucedido!");
+                        else System.out.println("Senha incorreta.");
+
                     } else {
                         System.out.println("Usuário não encontrado.");
                     }

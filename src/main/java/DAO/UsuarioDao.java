@@ -1,6 +1,8 @@
 package DAO;
 
 import Model.Usuario;
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,13 +26,13 @@ public class UsuarioDao {
 
             return true;
         } catch (Exception e) {
-            System.out.println("Erro: " + e.getMessage());
-            e.printStackTrace();
+            if (e.getMessage().contains("Duplicate entry") && e.getMessage().contains("email")) System.out.println("Erro: Email já cadastado");
+            if (e.getMessage().contains("Duplicate entry") && e.getMessage().contains("numIdentificacao")) System.out.println("Erro: Crachá já cadastado");
             return false;
         }
     }
 
-    public boolean editarUsuario(Usuario usuario, long usuarioLogado) {
+    public boolean editarUsuario(Usuario usuario, Long usuarioLogado) {
         String sql = "UPDATE Usuario SET nomeUsuario = ?, email = ?, telefone = ?, cargo = ?, updateID = ? WHERE idUsuario = ?";
 
         try (Connection conn = Conexao.conectar();
@@ -51,7 +53,7 @@ public class UsuarioDao {
         }
     }
 
-    public boolean changeState(int state, long idAlvo, long idLogado) {
+    public boolean changeState(int state, Long idAlvo, Long idLogado) {
         String sql = "UPDATE Usuario SET estado = ?, updateID = ? WHERE idUsuario = ?";
 
         try (Connection conn = Conexao.conectar();
@@ -67,6 +69,34 @@ public class UsuarioDao {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public Usuario buscarPorCracha(int cracha) {
+        String sql = "SELECT * FROM Usuario WHERE numIdentificacao = ?";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, cracha);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Usuario u = new Usuario();
+                    u.setIdUsuario(rs.getLong("idUsuario"));
+                    u.setNumIdentificacao(rs.getInt("numIdentificacao"));
+                    u.setNomeUsuario(rs.getString("nomeUsuario"));
+                    u.setEmail(rs.getString("email"));
+                    u.setTelefone(rs.getString("telefone"));
+                    u.setCargo(rs.getInt("cargo"));
+                    u.setSenha(rs.getString("senha"));
+                    u.setEstado(rs.getInt("estado"));
+                    return u;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public Usuario buscarPorEmail(String email) {
@@ -98,7 +128,7 @@ public class UsuarioDao {
         return null;
     }
 
-    public Usuario buscarPorId(long id) {
+    public Usuario buscarPorId(Long id) {
         String sql = "SELECT * FROM Usuario WHERE idUsuario = ?";
 
         try (Connection conn = Conexao.conectar();
@@ -128,7 +158,7 @@ public class UsuarioDao {
 
     public List<Usuario> listarUsuarios() {
         List<Usuario> usuarios = new ArrayList<>();
-        String sql = "SELECT idUsuario, numIdentificacao, nomeUsuario, email, telefone, cargo, estado FROM Usuario ORDER BY idUsuario ASC"; //remover "senha", está aqui apenas para fins de teste
+        String sql = "SELECT idUsuario, numIdentificacao, nomeUsuario, email, telefone, cargo, senha, estado FROM Usuario ORDER BY idUsuario ASC"; //remover "senha", está aqui apenas para fins de teste
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -142,6 +172,7 @@ public class UsuarioDao {
                 u.setEmail(rs.getString("email"));
                 u.setTelefone(rs.getString("telefone"));
                 u.setCargo(rs.getInt("cargo"));
+                u.setSenha(rs.getString("senha"));
                 u.setEstado(rs.getInt("estado"));
                 usuarios.add(u);
             }
@@ -169,5 +200,37 @@ public class UsuarioDao {
 
         return usuariosFiltrados;
     }
+
+
+    public boolean checarSenha(String plainPassword, String storedHash) {
+        return BCrypt.checkpw(plainPassword, storedHash);
+    }
+
+    public boolean mudarSenha(String senhaNova, String senhaAntiga, Long idUsuario) {
+        Usuario usuarioEncontrado = buscarPorId(idUsuario);
+        String senhaHash;
+        
+        if (usuarioEncontrado != null) {
+            if (checarSenha(senhaAntiga, usuarioEncontrado.getSenha())) {
+                senhaHash = BCrypt.hashpw(senhaNova, BCrypt.gensalt());
+            }else return false;
+        }else return false;
+
+        String sql = "UPDATE Usuario SET senha = ?, updateID = ? WHERE idUsuario = ?";
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, senhaHash);
+            stmt.setLong(2, idUsuario);  // Para o LOG
+            stmt.setLong(3, idUsuario);  // Para o WHERE
+            stmt.executeUpdate();
+
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Erro: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
 }
