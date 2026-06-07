@@ -14,13 +14,13 @@ public class Usuario {
     }
 
    public Usuario(String nomeUsuario, String senha) {
-        this.nomeUsuario = nomeUsuario;
+        this.nomeUsuario = nomeUsuario.trim();
         this.senha = senha;
     }
 
    public Usuario(Long idUsuario, String nomeUsuario, String senha, int estado) {
         this.idUsuario = idUsuario;
-        this.nomeUsuario = nomeUsuario;
+        this.nomeUsuario = nomeUsuario.trim();
         this.senha = senha;
         this.estado = estado;
     }
@@ -46,7 +46,7 @@ public class Usuario {
     }
 
     public void setNomeUsuario(String nomeUsuario) {
-        this.nomeUsuario = nomeUsuario;
+        this.nomeUsuario = nomeUsuario.trim();
     }
 
     public String getEmail() {
