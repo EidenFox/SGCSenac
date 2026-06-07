@@ -23,7 +23,7 @@ public class CategoriaDao {
                 Categoria c = new Categoria();
                 c.setIdCategoria(rs.getLong("idCategoria"));
                 c.setNome(rs.getString("nomeCategoria"));
-                c.setDescricao(rs.getString("descricaoCatego"));
+                c.setDescricao(rs.getString("descricaoCategoria"));
                 c.setEstado(rs.getInt("estado"));
                 categorias.add(c);
             }

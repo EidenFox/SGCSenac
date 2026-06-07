@@ -32,7 +32,11 @@ public class Categoria {
     }
 
     public void setNome(String nome) {
-        this.nome = nome.trim();
+        if (nome == null || nome.trim().isEmpty()) {
+            this.nome = null;
+        } else {
+            this.nome = nome.trim();
+        }
     }
 
     public String getDescricao() {
@@ -40,7 +44,11 @@ public class Categoria {
     }
 
     public void setDescricao(String descricao) {
-        this.descricao = descricao.trim();
+        if (descricao == null || descricao.trim().isEmpty()) {
+            this.descricao = null;
+        } else {
+            this.descricao = descricao.trim();
+        }
     }
 
     public int getEstado() {
