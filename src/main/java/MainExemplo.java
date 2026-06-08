@@ -11,11 +11,13 @@ public class MainExemplo {
         return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
     }
 
+
     static void main() {
         UsuarioDao usuarioDao = new UsuarioDao();
         Scanner scan = new Scanner(System.in);
         int op;
         long id;
+
 
         do {
             System.out.println("--------MENU--------");
@@ -42,8 +44,6 @@ public class MainExemplo {
                     novoUsuario.setNomeUsuario(scan.nextLine());
                     System.out.println("Digite seu Email de login: ");
                     novoUsuario.setEmail(scan.nextLine());
-                    System.out.println("Digite seu telefone: ");
-                    novoUsuario.setTelefone(scan.nextLine());
 
                     //Cadastro da senha
                     System.out.print("Digite sua Senha: ");

@@ -25,9 +25,11 @@ public class UsuarioDao {
             stmt.executeUpdate();
 
             return true;
-        } catch (Exception e) {
-            if (e.getMessage().contains("Duplicate entry") && e.getMessage().contains("email")) System.out.println("Erro: Email já cadastado");
-            if (e.getMessage().contains("Duplicate entry") && e.getMessage().contains("numIdentificacao")) System.out.println("Erro: Crachá já cadastado");
+        } catch (SQLException e) {
+            if (e.getMessage() != null) {
+                if (e.getMessage().contains("Duplicate entry") && e.getMessage().contains("email")) System.out.println("Erro: Email já cadastrado");
+                if (e.getMessage().contains("Duplicate entry") && e.getMessage().contains("numIdentificacao")) System.out.println("Erro: Crachá já cadastrado");
+            }
             return false;
         }
     }
