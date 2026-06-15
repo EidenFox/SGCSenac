@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class UsuarioDao {
 
@@ -73,7 +74,7 @@ public class UsuarioDao {
         }
     }
 
-    public Usuario buscarPorCracha(int cracha) {
+    public Optional<Usuario> buscarPorCracha(int cracha) {
         String sql = "SELECT * FROM Usuario WHERE numIdentificacao = ?";
 
         try (Connection conn = Conexao.conectar();
@@ -91,17 +92,17 @@ public class UsuarioDao {
                     u.setCargo(rs.getInt("cargo"));
                     u.setSenha(rs.getString("senha"));
                     u.setEstado(rs.getInt("estado"));
-                    return u;
+                    return Optional.of(u);
                 }
             }
         } catch (SQLException e) {
             System.out.println("Erro: " + e.getMessage());
             e.printStackTrace();
         }
-        return null;
+        return Optional.empty();
     }
 
-    public Usuario buscarPorEmail(String email) {
+    public Optional<Usuario> buscarPorEmail(String email) {
         String sql = "SELECT * FROM Usuario WHERE email = ?";
 
         try (Connection conn = Conexao.conectar();
@@ -120,17 +121,17 @@ public class UsuarioDao {
                     u.setCargo(rs.getInt("cargo"));
                     u.setSenha(rs.getString("senha"));
                     u.setEstado(rs.getInt("estado"));
-                    return u;
+                    return Optional.of(u);
                 }
             }
         } catch (SQLException e) {
             System.out.println("Erro: " + e.getMessage());
             e.printStackTrace();
         }
-        return null;
+        return Optional.empty();
     }
 
-    public Usuario buscarPorId(Long id) {
+    public Optional<Usuario> buscarPorId(Long id) {
         String sql = "SELECT * FROM Usuario WHERE idUsuario = ?";
 
         try (Connection conn = Conexao.conectar();
@@ -148,14 +149,14 @@ public class UsuarioDao {
                     u.setCargo(rs.getInt("cargo"));
                     u.setSenha(rs.getString("senha"));
                     u.setEstado(rs.getInt("estado"));
-                    return u;
+                    return Optional.of(u);
                 }
             }
         } catch (SQLException e) {
             System.out.println("Erro: " + e.getMessage());
             e.printStackTrace();
         }
-        return null;
+        return Optional.empty();
     }
 
     public List<Usuario> listarUsuarios() {
@@ -196,7 +197,6 @@ public class UsuarioDao {
         for (Usuario u : usuarios ){
             if (u.getEstado() == state){
                 usuariosFiltrados.add(u);
-                System.out.println(u.getEstado());
             }
         }
 
@@ -208,11 +208,14 @@ public class UsuarioDao {
         return BCrypt.checkpw(plainPassword, storedHash);
     }
 
+
+
     public boolean mudarSenha(String senhaNova, String senhaAntiga, Long idUsuario) {
-        Usuario usuarioEncontrado = buscarPorId(idUsuario);
+        Optional<Usuario> usuarioOpt = buscarPorId(idUsuario);
         String senhaHash;
-        
-        if (usuarioEncontrado != null) {
+
+        if (usuarioOpt.isPresent()) {
+            Usuario usuarioEncontrado = usuarioOpt.get();
             if (checarSenha(senhaAntiga, usuarioEncontrado.getSenha())) {
                 senhaHash = BCrypt.hashpw(senhaNova, BCrypt.gensalt());
             }else return false;

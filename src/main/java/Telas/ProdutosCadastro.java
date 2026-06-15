@@ -16,6 +16,7 @@ public class ProdutosCadastro {
     private JLabel estadoLabel;
     private JLabel cadSenhaLabel;
     private JLabel TitleLabel;
+<<<<<<< HEAD
     private JTextField TFnumeroId;
     private JTextField TFnomeUsuario;
     private JTextField TFemail;
@@ -23,4 +24,11 @@ public class ProdutosCadastro {
     private JTextField TFcargo;
     private JTextField TFsenha;
     private JTextField TFestado;
+=======
+    private JPanel panel1;
+    private JLabel usuarioCracha;
+    private JTextField usuarioTF;
+    private JLabel senhaLabel;
+    private JPasswordField senhaTF;
+>>>>>>> 2aee509bfa965959ff7b55bfd2d6af16ba3fb219
 }

@@ -3,6 +3,7 @@ import Model.Usuario;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class MainExemplo {
@@ -103,7 +104,7 @@ public class MainExemplo {
                         break;
                     }
                     for (Usuario u : lista) {
-                        System.out.println("ID: " + u.getIdUsuario() + " - Crachá: " + u.getNumIdentificacao() + " - Nome: " + u.getNomeUsuario() + " - Estado: " + u.getEstado());
+                        System.out.println("ID: " + u.getIdUsuario() + " - Crachá: " + u.getNumIdentificacao() + " - Email: " + u.getEmail() + " - Nome: " + u.getNomeUsuario() + " - Estado: " + u.getEstado());
                     }
                     break;
 
@@ -133,9 +134,10 @@ public class MainExemplo {
                     System.out.print("Digite o Email do Usuário: ");
                     String emailLogin = scan.nextLine();
 
-                    Usuario usuarioEncontrado = usuarioDao.buscarPorEmail(emailLogin);
+                    Optional<Usuario> usuarioOpt = usuarioDao.buscarPorEmail(emailLogin);
 
-                    if (usuarioEncontrado != null) {
+                    if (usuarioOpt.isPresent()) {
+                        Usuario usuarioEncontrado = usuarioOpt.get();
                         System.out.print("Digite a Senha: ");
                         String senhaLogin = scan.nextLine();
 
