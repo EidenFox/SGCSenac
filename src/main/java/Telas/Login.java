@@ -5,6 +5,7 @@ import Model.Usuario;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Optional;
 
 public class Login extends JFrame {
     private JPanel panel1;
@@ -38,9 +39,10 @@ public class Login extends JFrame {
             String senhaDigitada = new String(senhaTF.getPassword());
 
             UsuarioDao dao = new UsuarioDao();
-            Usuario usuarioEncontrado = dao.buscarPorCracha(cracha);
+            Optional<Usuario> usuarioOpt = dao.buscarPorCracha(cracha);
 
-            if (usuarioEncontrado != null) {
+            if (usuarioOpt.isPresent()) {
+                Usuario usuarioEncontrado = usuarioOpt.get();
 
                 if (dao.checarSenha(senhaDigitada, usuarioEncontrado.getSenha())) {
 

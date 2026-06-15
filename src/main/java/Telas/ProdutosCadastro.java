@@ -16,4 +16,9 @@ public class ProdutosCadastro {
     private JLabel estadoLabel;
     private JLabel cadSenhaLabel;
     private JLabel TitleLabel;
+    private JPanel panel1;
+    private JLabel usuarioCracha;
+    private JTextField usuarioTF;
+    private JLabel senhaLabel;
+    private JPasswordField senhaTF;
 }
