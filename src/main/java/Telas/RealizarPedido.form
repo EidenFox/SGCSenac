@@ -8,7 +8,7 @@
     <properties/>
     <border type="none"/>
     <children>
-      <grid id="dd78a" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="dd78a" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -16,20 +16,15 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="4321a" class="javax.swing.JLabel">
+          <component id="4321a" class="javax.swing.JLabel" binding="TitleLabel">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <font size="28"/>
-              <text value="Label"/>
+              <font name="Arial" size="28" style="1"/>
+              <text value="Novo Pedido"/>
             </properties>
           </component>
-          <hspacer id="1edce">
-            <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-          </hspacer>
         </children>
       </grid>
       <vspacer id="ce1f4">
@@ -45,7 +40,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="a0250" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+          <component id="a0250" class="javax.swing.JTextField" binding="TfData">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="9" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -85,7 +80,7 @@
               <text value="Categoria:"/>
             </properties>
           </component>
-          <component id="f285d" class="javax.swing.JTextField" binding="textField2" default-binding="true">
+          <component id="f285d" class="javax.swing.JTextField" binding="TfCracha">
             <constraints>
               <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="9" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -93,7 +88,7 @@
             </constraints>
             <properties/>
           </component>
-          <component id="bc66f" class="javax.swing.JTextField" binding="textField3" default-binding="true">
+          <component id="bc66f" class="javax.swing.JTextField" binding="TfCategoria">
             <constraints>
               <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="9" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -101,7 +96,7 @@
             </constraints>
             <properties/>
           </component>
-          <component id="56503" class="javax.swing.JTextField" binding="textField5" default-binding="true">
+          <component id="56503" class="javax.swing.JTextField" binding="TfQuantidade">
             <constraints>
               <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="9" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -119,28 +114,28 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="a7521" class="javax.swing.JButton" binding="button1" default-binding="true">
+          <component id="a7521" class="javax.swing.JButton" binding="BtEnviar">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Button"/>
+              <text value="Enviar"/>
             </properties>
           </component>
-          <component id="461dd" class="javax.swing.JButton" binding="button2" default-binding="true">
+          <component id="461dd" class="javax.swing.JButton" binding="BtCancelar">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Button"/>
+              <text value="Cancelar"/>
             </properties>
           </component>
-          <component id="d206d" class="javax.swing.JButton" binding="button3" default-binding="true">
+          <component id="d206d" class="javax.swing.JButton" binding="BtExcluir">
             <constraints>
               <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Button"/>
+              <text value="Excluir"/>
             </properties>
           </component>
         </children>
