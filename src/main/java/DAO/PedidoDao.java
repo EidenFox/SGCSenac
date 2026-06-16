@@ -94,7 +94,7 @@ public class PedidoDao {
                     stmtBusca.setLong(1, idPedido);
 
                     try (ResultSet rs = stmtBusca.executeQuery()) {
-                        while (rs.next()) {
+                        while (rs.next()) {     // tratamento de produto negativo
                             long idProduto = rs.getLong("Produtos_idProdutos");
                             int qtdComprada = rs.getInt("quantidade");
 
@@ -128,9 +128,11 @@ public class PedidoDao {
                     conn.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
+
                 }
             }
         }
+
     }
 
     public List<Pedido> listarPedidosPorStatus(int status) {
