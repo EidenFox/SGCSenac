@@ -6,7 +6,7 @@ public class ItemsCadastro {
     private JPanel panel1;
     private JLabel Title;
     private JLabel CategoriaLabel;
-    private JLabel PesoLabel;
+    private JLabel QuantidadeLabel;
     private JLabel UnidadeLabel;
     private JLabel ValRefLabel;
     private JTextField TFCategoria;
@@ -19,6 +19,10 @@ public class ItemsCadastro {
     private JButton SalvarButton;
     private JTextField TFdescricao;
     private JLabel DescricaoLabel;
+    private JTextField TfNome;
+    private JLabel NomeLabel;
+    private JTextField TfPreco;
+    private JLabel PrecoLabel;
 
     //Campos Categoria, Descrição e Unidades devem ser obrigatórios**
 }
