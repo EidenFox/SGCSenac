@@ -1,9 +1,13 @@
 package Telas;
 
 import javax.swing.*;
+import javax.swing.text.DateFormatter;
+import javax.swing.text.DefaultFormatterFactory;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class RealizarPedido {
-    private JTextField TfData;
     private JTextField TfCracha;
     private JTextField TfCategoria;
     private JTextField TfItem;
@@ -13,4 +17,16 @@ public class RealizarPedido {
     private JButton BtCancelar;
     private JButton BtExcluir;
     private JLabel TitleLabel;
+    private JFormattedTextField formattedTFData;
+
+   
+    public RealizarPedido() {
+        inicializarData();
+    }
+
+    private void inicializarData() {
+        DateFormat formatoData = new SimpleDateFormat("dd/MM/yyyy");
+        formattedTFData.setFormatterFactory(new DefaultFormatterFactory(new DateFormatter(formatoData)));
+        formattedTFData.setValue(new Date());
+    }
 }
