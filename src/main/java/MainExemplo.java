@@ -104,7 +104,7 @@ public class MainExemplo {
                         break;
                     }
                     for (Usuario u : lista) {
-                        System.out.println("ID: " + u.getIdUsuario() + " - Crachá: " + u.getNumIdentificacao() + " - Email: " + u.getEmail() + " - Nome: " + u.getNomeUsuario() + " - Estado: " + u.getEstado());
+                        System.out.println("ID: " + u.getIdUsuario() + " Cargo: " + u.getCargo() + " - Crachá: " + u.getNumIdentificacao() + " - Email: " + u.getEmail() + " - Nome: " + u.getNomeUsuario() + " - Estado: " + u.getEstado());
                     }
                     break;
 

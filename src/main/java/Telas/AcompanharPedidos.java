@@ -2,7 +2,7 @@ package Telas;
 
 import javax.swing.*;
 
-public class AcompanharPedidos {
+public class AcompanharPedidos extends JFrame {
     private JPanel panel1;
     private JTextField TfConsultarID;
     private JButton BtPesquisar;

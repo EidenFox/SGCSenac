@@ -2,7 +2,7 @@ package Telas;
 
 import javax.swing.*;
 
-public class AnalizarPedidos {
+public class AnalizarPedidos extends JFrame {
     private JPanel panel1;
     private JButton BtPesquisar;
     private JButton BtAprovar;

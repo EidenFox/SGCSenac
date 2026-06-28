@@ -2,7 +2,7 @@ package Telas;
 
 import javax.swing.*;
 
-public class ProdutosLista {
+public class ProdutosLista extends JFrame {
     private JPanel panel1;
     private JList listProdutosCadastrados;
     private JTextField TfProdutoID;

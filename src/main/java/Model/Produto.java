@@ -10,12 +10,23 @@ public class Produto {
     private Categoria categoria;
     private BigDecimal preco;
     private int estado;
+    private String unidade;
 
-    public Produto(String nome, String descricao, int quantidade, Categoria categoria) {
+    public Produto(String nome, String descricao, int quantidade, Categoria categoria, String unidade) {
         this.nome = nome;
         this.descricao = descricao;
         this.quantidade = quantidade;
         this.categoria = categoria;
+        this.unidade = unidade;
+    }
+
+    public Produto(String nome, String descricao, int quantidade, BigDecimal preco, Categoria categoria, String unidade) {
+        this.nome = nome;
+        this.descricao = descricao;
+        this.quantidade = quantidade;
+        this.preco = preco;
+        this.categoria = categoria;
+        this.unidade = unidade;
     }
 
     public Produto() {
@@ -31,6 +42,14 @@ public class Produto {
 
     public String getNome() {
         return nome;
+    }
+
+    public String getUnidade() {
+        return unidade;
+    }
+
+    public void setUnidade(String unidade) {
+        this.unidade = unidade;
     }
 
     public void setNome(String nome) {

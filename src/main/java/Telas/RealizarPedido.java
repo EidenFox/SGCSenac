@@ -7,7 +7,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class RealizarPedido {
+public class RealizarPedido extends JFrame {
     private JTextField TfCracha;
     private JTextField TfCategoria;
     private JTextField TfItem;

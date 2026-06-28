@@ -15,7 +15,6 @@ public class Login extends JFrame {
     private JLabel senhaLabel;
     private JPasswordField senhaTF;
 
-    public static Usuario usuarioLogado;
 
     public Login() {
         setContentPane(panel1);
@@ -51,28 +50,19 @@ public class Login extends JFrame {
                         return;
                     }
 
-                    usuarioLogado = usuarioEncontrado;
-                    JOptionPane.showMessageDialog(this, "Bem vindo a bordo, " + usuarioLogado.getNomeUsuario() + "!");
-
-                    if (usuarioLogado.getCargo() == 0) {
-                        System.out.println("Limpa os pé antes de entrar: ADMINISTRADOR");
-                        // TODO: Chamar a Tela Principal com TODAS as funções liberadas
-
-                    } else if (usuarioLogado.getCargo() == 1) {
-                        System.out.println("Limpa os pé antes de entrar: USUÁRIO");
-                        // TODO: Chamar a Tela Principal APENAS com a tela de Gerar Solicitação
-
-                    }
+                    Usuario usuarioValidado = usuarioEncontrado;
+                    JOptionPane.showMessageDialog(this, "Bem vindo a bordo, " + usuarioValidado.getNomeUsuario() + "!");
+                    new MenuInicial(usuarioValidado);
                     this.dispose();
 
                 } else {
-                    JOptionPane.showMessageDialog(this, "Pare de tentar invedir contas indian!!");
+                    JOptionPane.showMessageDialog(this, "Pare de tentar invedir contas!!");
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Quem é voce?");
             }
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Só hablo em numeros nego");
+            JOptionPane.showMessageDialog(this, "Crachá deve conter apenas Numeros");
         }
     }
 
