@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public class ItemsCadastro extends JFrame {
     private JPanel panel1;
@@ -30,22 +31,25 @@ public class ItemsCadastro extends JFrame {
     private JSpinner SQuantidade;
     private JComboBox CbUnidades;
     private Usuario usuarioLogado;
+    private Optional<Produto> produto;
 
-
-    public ItemsCadastro(Usuario usuarioLogado) {
+    public ItemsCadastro(Usuario usuarioLogado, Optional<Produto> produto) {
         this.usuarioLogado = usuarioLogado;
+        this.produto = produto;
+
         setContentPane(panel1);
         /* INICIO DE FUNÇÃO DE [Configuração de Spinner]; esta função define um modelo numérico com limite mínimo (0), bloqueando a digitação de valores negativos pelo utilizador */
         SpinnerNumberModel modeloQuantidade = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);   // Parâmetros: Valor inicial, Valor mínimo, Valor máximo, Incremento
         SQuantidade.setModel(modeloQuantidade);
 
-        setTitle("Cadastrar itens");
+        setTitle(produto.isPresent() ? "Editar Item" : "Cadastrar Item");
         setSize(640, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
-        comboBoxCategoria();
 
+        comboBoxCategoria();
+        preencherDados();
 
         Cancelar.addActionListener(new ActionListener() {
             @Override
@@ -94,23 +98,70 @@ public class ItemsCadastro extends JFrame {
                 }
 
                 // Criação do Produto
-                Produto produto = new Produto(nome, descricao, quantidade, preco, categoriaSelecionada, unidade);
+                Produto produtoPreenchido = new Produto(nome, descricao, quantidade, preco, categoriaSelecionada, unidade);
 
-                // Cadastrar Produto
                 ProdutoDao produtoDao = new ProdutoDao();
-                boolean sucesso = produtoDao.cadastrarProduto(produto);
+                boolean sucesso;
 
-                if (sucesso){
-                    JOptionPane.showMessageDialog(panel1, "Produto cadastrado com Sucesso!");
+                // Se for edição
+                if (produto.isPresent()) {
+                    produtoPreenchido.setIdProduto(produto.get().getIdProduto());
+                    sucesso = produtoDao.editarProduto(produtoPreenchido, usuarioLogado);
+                } else {
+                    sucesso = produtoDao.cadastrarProduto(produtoPreenchido);
+                }
+
+                if (sucesso) {
+                    JOptionPane.showMessageDialog(panel1, produto.isPresent() ? "Produto editado com Sucesso!" : "Produto cadastrado com Sucesso!");
                     new MenuInicial(usuarioLogado);
                     dispose();
                 } else {
-                  JOptionPane.showMessageDialog(panel1, "Erro ao cadastrar o produto!");
+                    JOptionPane.showMessageDialog(panel1, "Erro ao processar a requisição no banco de dados!");
                 }
 
 
             }
         });
+    }
+
+    private void preencherDados() {
+        if (produto.isPresent()) {
+            Produto p = produto.get();
+
+            Title.setText("Editar Produto");
+            CadastrarButton.setText("Editar");
+
+            TfNome.setText(p.getNome());
+            TFdescricao.setText(p.getDescricao());
+            SQuantidade.setValue(p.getQuantidade());
+
+            if (p.getPreco() != null) {
+                // Converte de volta para string substituindo ponto por vírgula para manter o padrão PT-BR na tela
+                TfPreco.setText(p.getPreco().toString().replace(".", ","));
+            }
+
+            // Encontrar a categoria correta no ComboBox comparando os IDs
+            if (p.getCategoria() != null) {
+                for (int i = 0; i < CbCategoria.getItemCount(); i++) {
+                    Categoria catBox = (Categoria) CbCategoria.getItemAt(i);
+                    if (catBox.getIdCategoria().equals(p.getCategoria().getIdCategoria())) {
+                        CbCategoria.setSelectedIndex(i);
+                        break;
+                    }
+                }
+            }
+
+            // Encontrar a unidade correta no ComboBox
+            if (p.getUnidade() != null) {
+                for (int i = 0; i < CbUnidades.getItemCount(); i++) {
+                    String unBox = CbUnidades.getItemAt(i).toString();
+                    if (unBox.equalsIgnoreCase(p.getUnidade())) {
+                        CbUnidades.setSelectedIndex(i);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
 

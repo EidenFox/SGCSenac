@@ -3,6 +3,7 @@ import Model.Usuario;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Optional;
 
 public class MenuInicial extends JFrame {
     private JPanel panel1;
@@ -13,6 +14,7 @@ public class MenuInicial extends JFrame {
     private JButton BtCadFuncionario;
     private JButton BtAnalisaPedidos;
     private JLabel TitleLabel;
+    private JButton listarProdutosButton;
     private Usuario usuarioLogado;
 
 
@@ -39,7 +41,14 @@ public class MenuInicial extends JFrame {
         BtCadItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new ItemsCadastro(usuarioLogado);
+                new ItemsCadastro(usuarioLogado, Optional.empty());
+                dispose();
+            }
+        });
+        listarProdutosButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new ProdutosLista(usuarioLogado);
                 dispose();
             }
         });

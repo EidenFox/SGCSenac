@@ -158,8 +158,6 @@ CREATE TABLE IF NOT EXISTS `SGCSenac`.`UsuarioLog` (
   PRIMARY KEY (`idUsuarioLog`))
 ENGINE = InnoDB;
 
-USE `SGCSenac` ;
-
 -- -----------------------------------------------------
 -- View `SGCSenac`.`PEDIDO`
 -- -----------------------------------------------------
@@ -261,6 +259,20 @@ INSERT INTO `SGCSenac`.`Categoria` (`nomeCategoria`, `descricaoCategoria`, `esta
 ('Papelaria', 'Materiais de escritório e consumíveis', 1),
 ('Limpeza', 'Produtos de higienização e manutenção', 1),
 ('Mobiliário', 'Mesas, cadeiras e estantes', 1);
+
+
+INSERT INTO `SGCSenac`.`Produtos`
+(`nomeProduto`, `descricaoProduto`, `quantidadeEstoque`, `unidade`, `Categoria_idCategoria`, `precoProduto`)
+VALUES
+('Mouse sem fio', 'Mouse óptico sem fio 2.4GHz', 50, 'un', 1, 45.90),
+('Teclado Mecânico', 'Teclado mecânico switch azul', 20, 'un', 1, 150.00),
+('Monitor 24"', 'Monitor LED Full HD 75Hz', 15, 'un', 1, 750.00),
+('Papel Sulfite A4', 'Caixa com 10 resmas de papel A4 75g', 100, 'cx', 2, 180.50),
+('Caneta Esferográfica', 'Caixa com 50 canetas azuis', 80, 'cx', 2, 35.00),
+('Desinfetante 5L', 'Desinfetante líquido aroma lavanda', 30, 'l', 3, 25.00),
+('Detergente Neutro', 'Detergente líquido para louças 500ml', 200, 'ml', 3, 2.50),
+('Cadeira de Escritório', 'Cadeira ergonômica com ajuste de altura', 15, 'un', 4, 450.00),
+('Mesa de Reunião', 'Mesa de madeira maciça para 8 pessoas', 5, 'un', 4, 1200.00);
 
 
 SELECT p.idProdutos, p.nomeProduto, p.descricaoProduto, p.precoProduto, p.quantidadeEstoque, p.unidade, p.estado AS estadoProduto, c.idCategoria, c.nomeCategoria, c.descricaoCategoria, c.estado AS estadoCategoria
