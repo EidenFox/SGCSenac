@@ -46,6 +46,7 @@ public class ItemsCadastro extends JFrame {
         setSize(640, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        getRootPane().setDefaultButton(CadastrarButton);
         setVisible(true);
 
         comboBoxCategoria();

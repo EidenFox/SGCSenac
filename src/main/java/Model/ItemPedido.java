@@ -7,14 +7,17 @@ public class ItemPedido {
     private Produto produto;
     private int quantidade;
     private BigDecimal precoUnitario;
+    private String observacao;
+
 
     public ItemPedido() {
     }
 
-    public ItemPedido(Produto produto, int quantidade, BigDecimal precoUnitario) {
+    public ItemPedido(Produto produto, int quantidade, BigDecimal precoUnitario, String observacao) {
         this.produto = produto;
         this.quantidade = quantidade;
         this.precoUnitario = precoUnitario;
+        this.observacao = observacao;
     }
 
     public Long getIdItensPedido() {
@@ -23,6 +26,14 @@ public class ItemPedido {
 
     public void setIdItensPedido(Long idItensPedido) {
         this.idItensPedido = idItensPedido;
+    }
+
+    public String getObservacao() {
+        return observacao;
+    }
+
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
     }
 
     public Produto getProduto() {

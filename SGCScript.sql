@@ -79,6 +79,8 @@ CREATE TABLE IF NOT EXISTS `SGCSenac`.`Pedido` (
   `statusPedido` INT NOT NULL DEFAULT 0,
   `dataPedido` DATETIME NOT NULL DEFAULT now(),
   `Usuario_idUsuario` BIGINT NOT NULL,
+  `motivoRecusa` VARCHAR(255) NULL,
+  `alteracao` varchar(100) NULL,
   PRIMARY KEY (`idPedido`),
   INDEX `fk_Pedido_Usuario1_idx` (`Usuario_idUsuario` ASC) VISIBLE,
   CONSTRAINT `fk_Pedido_Usuario1`
@@ -126,6 +128,7 @@ CREATE TABLE IF NOT EXISTS `SGCSenac`.`ItensPedido` (
   `Pedido_idPedido` BIGINT NOT NULL,
   `quantidade` INT NOT NULL,
   `precoUnitario` DECIMAL(10,2),
+  `observacao` VARCHAR(100) NULL,
   PRIMARY KEY (`idItensPedido`),
   INDEX `fk_ItensPedido_Produtos1_idx` (`Produtos_idProdutos` ASC) VISIBLE,
   INDEX `fk_ItensPedido_Pedido1_idx` (`Pedido_idPedido` ASC) VISIBLE,
@@ -175,14 +178,14 @@ left join Produtos pr on pr.idProdutos = i.Produtos_idProdutos
 -- -----------------------------------------------------
 DROP VIEW IF EXISTS `SGCSenac`.`ViewDetalhesPedido` ;
 USE `SGCSenac`;
-CREATE  OR REPLACE VIEW `ViewDetalhesPedido` AS
-SELECT p.idPedido as ID, u.nomeUsuario as Funcionario, pr.nomeProduto as Produto, i.quantidade as Quantidade, 
-	(i.precoUnitario * i.quantidade) as "Subtotal", p.dataPedido as "Data", 
-    p.statusPedido as "Status"
-from Pedido p
-inner join Usuario u on u.idUsuario = p.Usuario_idUsuario
-inner join ItensPedido i on i.Pedido_idPedido = p.idPedido
-inner join Produtos pr on pr.idProdutos = i.Produtos_idProdutos;
+CREATE OR REPLACE VIEW `SGCSenac`.`ViewDetalhesPedido` AS
+SELECT p.idPedido as ID, u.nomeUsuario as Funcionario, pr.nomeProduto as Produto, i.quantidade as Quantidade,
+    (i.precoUnitario * i.quantidade) as "Subtotal", p.dataPedido as "Data",
+    p.statusPedido as "Status", i.observacao as "Observacao"
+FROM Pedido p
+INNER JOIN Usuario u ON u.idUsuario = p.Usuario_idUsuario
+INNER JOIN ItensPedido i ON i.Pedido_idPedido = p.idPedido
+INNER JOIN Produtos pr ON pr.idProdutos = i.Produtos_idProdutos;
 USE `SGCSenac`;
 
 DELIMITER $$

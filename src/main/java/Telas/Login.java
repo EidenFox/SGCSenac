@@ -5,6 +5,8 @@ import Model.Usuario;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.Optional;
 
 public class Login extends JFrame {
@@ -22,6 +24,8 @@ public class Login extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 300);
         setLocationRelativeTo(null);
+        getRootPane().setDefaultButton(EntrarBT);
+
         setVisible(true);
 
         EntrarBT.addActionListener(new ActionListener() {
