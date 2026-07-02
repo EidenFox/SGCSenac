@@ -19,6 +19,7 @@ public class AcompanharPedidos extends JFrame {
     private JList<Pedido> listPedidos;
     private JButton BtSair;
     private JButton BtDetalhes;
+    private JButton BtEditar;
 
     private Usuario usuarioLogado;
     private DefaultListModel<Pedido> modeloLista;
@@ -78,6 +79,16 @@ public class AcompanharPedidos extends JFrame {
         });
 
         setVisible(true);
+        BtEditar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Pedido pedidoSelecionado = listPedidos.getSelectedValue();
+                if (pedidoSelecionado != null) {
+                    new RealizarPedido(usuarioLogado, java.util.Optional.of(pedidoSelecionado));
+                    dispose();
+                }
+            }
+        });
     }
 
     private void carregarLista(String filtroID) {
