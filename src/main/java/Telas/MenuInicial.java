@@ -21,6 +21,7 @@ public class MenuInicial extends JFrame {
     private JLabel TitleLabel;
     private JButton listarProdutosButton;
     private JTextPane TaCreditos;
+    private JButton trocarContaButton;
     private Usuario usuarioLogado;
 
 
@@ -115,7 +116,13 @@ public class MenuInicial extends JFrame {
         });
 
 
-
+        trocarContaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new Login();
+                dispose();
+            }
+        });
     }
         private void habilitarBotoes(){
             if (usuarioLogado.getCargo() != 0) {
