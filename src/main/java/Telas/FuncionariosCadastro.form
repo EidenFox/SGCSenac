@@ -48,7 +48,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <grid id="5568e" layout-manager="GridLayoutManager" row-count="1" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="5568e" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -56,36 +56,20 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="ada2f" class="javax.swing.JButton" binding="CadastrarBT">
+                  <component id="ada2f" class="javax.swing.JButton" binding="BTCancelar">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
-                      <text value="Cadastrar"/>
+                      <text value="Cancelar"/>
                     </properties>
                   </component>
-                  <component id="96662" class="javax.swing.JButton" binding="EditarBT">
+                  <component id="96662" class="javax.swing.JButton" binding="BTCadastrar">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
-                      <text value="Editar"/>
-                    </properties>
-                  </component>
-                  <component id="235fc" class="javax.swing.JButton" binding="ConsultarBT">
-                    <constraints>
-                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="Consultar"/>
-                    </properties>
-                  </component>
-                  <component id="4c01a" class="javax.swing.JButton" binding="ExcluirBT">
-                    <constraints>
-                      <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="Excluir"/>
+                      <text value="Cadastrar"/>
                     </properties>
                   </component>
                 </children>
@@ -106,7 +90,7 @@
                 </constraints>
                 <properties>
                   <font name="Arial Rounded MT Bold" size="14" style="0"/>
-                  <text value="Número de identificação:"/>
+                  <text value="Número do Crachá"/>
                 </properties>
               </component>
               <component id="45c78" class="javax.swing.JTextField" binding="TFnumeroId">
@@ -131,7 +115,7 @@
                 </constraints>
                 <properties>
                   <font name="Arial Rounded MT Bold" size="14" style="0"/>
-                  <text value="Nome de usuário:"/>
+                  <text value="Nome completo: "/>
                 </properties>
               </component>
               <component id="24dfd" class="javax.swing.JTextField" binding="TFemail">
@@ -168,7 +152,7 @@
                   <text value="Telefone:"/>
                 </properties>
               </component>
-              <component id="23bfb" class="javax.swing.JTextField" binding="TFcargo">
+              <component id="c1251" class="javax.swing.JPasswordField" binding="TFsenha">
                 <constraints>
                   <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
@@ -176,48 +160,50 @@
                 </constraints>
                 <properties/>
               </component>
-              <component id="d3ba5" class="javax.swing.JLabel" binding="cargoLabel">
-                <constraints>
-                  <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <font name="Arial Rounded MT Bold" size="14" style="0"/>
-                  <text value="Cargo:"/>
-                </properties>
-              </component>
-              <component id="b708a" class="javax.swing.JTextField" binding="TFsenha">
-                <constraints>
-                  <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="-1"/>
-                  </grid>
-                </constraints>
-                <properties/>
-              </component>
               <component id="e6fd3" class="javax.swing.JLabel" binding="cadSenhaLabel">
                 <constraints>
-                  <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <font name="Arial Rounded MT Bold" size="14" style="0"/>
                   <text value="Senha:"/>
                 </properties>
               </component>
-              <component id="ceacc" class="javax.swing.JLabel" binding="estadoLabel">
+              <component id="ab5f6" class="javax.swing.JLabel" binding="cargoLabel">
+                <constraints>
+                  <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Cargo:"/>
+                  <visible value="false"/>
+                </properties>
+              </component>
+              <component id="978aa" class="javax.swing.JComboBox" binding="CBCargo">
+                <constraints>
+                  <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <model/>
+                  <visible value="false"/>
+                </properties>
+              </component>
+              <component id="e0424" class="javax.swing.JLabel" binding="estadoLabel">
                 <constraints>
                   <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <font name="Arial Rounded MT Bold" size="14" style="0"/>
                   <text value="Estado:"/>
+                  <visible value="false"/>
                 </properties>
               </component>
-              <component id="8aa53" class="javax.swing.JTextField" binding="TFestado">
+              <component id="5fb4e" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
                 <constraints>
-                  <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="-1"/>
-                  </grid>
+                  <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
-                <properties/>
+                <properties>
+                  <model/>
+                  <visible value="false"/>
+                </properties>
               </component>
             </children>
           </grid>

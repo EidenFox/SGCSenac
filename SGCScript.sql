@@ -37,8 +37,11 @@ CREATE TABLE IF NOT EXISTS `SGCSenac`.`ProdutoLog` (
   `idProdutoLog` BIGINT NOT NULL AUTO_INCREMENT,
   `idProdutos` BIGINT NOT NULL,
   `nomeOld` VARCHAR(45) NULL,
+  `nomeNew` VARCHAR(45) NULL,
   `descricaoOld` VARCHAR(100) NULL,
+  `descricaoNew` VARCHAR(100) NULL,
   `quantidadeOld` INT NULL,
+  `quantidadeNew` INT NULL,
   `unidade` varchar(2) NULL,
   `precoOld` DECIMAL NULL,
   `estadoOld` TINYINT NULL,
@@ -59,10 +62,12 @@ CREATE TABLE IF NOT EXISTS `SGCSenac`.`Usuario` (
   `nomeUsuario` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
   `telefone` VARCHAR(45) NULL,
-  `cargo` INT NOT NULL COMMENT 'Cargos: 1 = usuário | 0 = administrador',
+  `cargo` INT NOT NULL COMMENT 'Cargos: 1 = usuário | 0 = administrador | 2 = Pendente',
   `senha` VARCHAR(100) NULL,
   `estado` TINYINT NULL DEFAULT 1,
   `updateID` BIGINT NOT NULL DEFAULT -1,
+  `ultima_tentativa` DATETIME NULL,
+  `numero_tentativas` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`idUsuario`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
   UNIQUE INDEX `numIdentificacao_UNIQUE` (`numIdentificacao` ASC) VISIBLE)
@@ -195,11 +200,14 @@ DROP TRIGGER IF EXISTS `SGCSenac`.`Produtos_BEFORE_UPDATE` $$
 USE `SGCSenac`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `SGCSenac`.`Produtos_BEFORE_UPDATE` BEFORE UPDATE ON `Produtos` FOR EACH ROW
 BEGIN
-	insert into `SGCSenac`.`ProdutoLog` (idProdutos, nomeOld, descricaoOld, quantidadeOld, unidade, precoOld, estadoOld, idUsuarioAutor) values (
+	insert into `SGCSenac`.`ProdutoLog` (idProdutos, nomeOld, nomeNew, descricaoOld, descricaoNew, quantidadeOld, quantidadeNew, unidade, precoOld, estadoOld, idUsuarioAutor) values (
 		OLD.idProdutos,
 		OLD.nomeProduto,
+        NEW.nomeProduto,
         OLD.descricaoProduto,
+        NEW.descricaoProduto,
         OLD.quantidadeEstoque,
+        NEW.quantidadeEstoque,
         OLD.unidade,
         OLD.precoProduto,
         OLD.estado,
@@ -278,7 +286,8 @@ VALUES
 ('Mesa de Reunião', 'Mesa de madeira maciça para 8 pessoas', 5, 'un', 4, 1200.00);
 
 
-SELECT p.idProdutos, p.nomeProduto, p.descricaoProduto, p.precoProduto, p.quantidadeEstoque, p.unidade, p.estado AS estadoProduto, c.idCategoria, c.nomeCategoria, c.descricaoCategoria, c.estado AS estadoCategoria
-FROM Produtos p
-INNER JOIN Categoria c ON p.Categoria_idCategoria = c.idCategoria
-ORDER BY p.idProdutos ASC;
+
+select pl.idProdutos, u.nomeUsuario, pl.nomeOld, pl.nomeNew, pl.descricaoOld, pl.descricaoNew, pl.quantidadeOld, pl.quantidadeNew, pl.precoOld, pl.precoOld, pl.dataLog from ProdutoLog pl
+join Usuario u on u.idUsuario = pl.idUsuarioAutor
+where pl.idProdutos = 1
+order by pl.dataLog desc;

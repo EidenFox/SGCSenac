@@ -22,6 +22,7 @@ public class MenuInicial extends JFrame {
     private JButton listarProdutosButton;
     private JTextPane TaCreditos;
     private JButton trocarContaButton;
+    private JButton AlterarSenhaButton;
     private Usuario usuarioLogado;
 
 
@@ -115,12 +116,23 @@ public class MenuInicial extends JFrame {
             }
         });
 
-
         trocarContaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new Login();
                 dispose();
+            }
+        });
+        BtCadFuncionario.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new GerenciarFuncionarios(usuarioLogado);
+            }
+        });
+        AlterarSenhaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new MudarSenha(usuarioLogado);
             }
         });
     }

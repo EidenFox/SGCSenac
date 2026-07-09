@@ -3,10 +3,11 @@ package Telas;
 import DAO.UsuarioDao;
 import Model.Usuario;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Optional;
 
 public class Login extends JFrame {
@@ -16,15 +17,27 @@ public class Login extends JFrame {
     private JTextField usuarioTF;
     private JLabel senhaLabel;
     private JPasswordField senhaTF;
+    private JLabel cadastrarLabel;
 
 
     public Login() {
         setContentPane(panel1);
         setTitle("SGC Senac - Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 300);
+        setSize(400, 350);
         setLocationRelativeTo(null);
         getRootPane().setDefaultButton(EntrarBT);
+
+        cadastrarLabel.setText("<html><u>Não tem uma conta ainda? Cadastrar!</u></html>");
+        cadastrarLabel.setForeground(Color.BLUE);
+        cadastrarLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        cadastrarLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new FuncionariosCadastro();
+            }
+        });
 
         setVisible(true);
 
@@ -48,22 +61,21 @@ public class Login extends JFrame {
                 Usuario usuarioEncontrado = usuarioOpt.get();
 
                 if (dao.checarSenha(senhaDigitada, usuarioEncontrado.getSenha())) {
-
-                    if (usuarioEncontrado.getEstado() == 0) {
-                        JOptionPane.showMessageDialog(this, "Usuário BANIDO! faz o ticket pai");
+                    if (usuarioEncontrado.getEstado() != 1) {
+                        JOptionPane.showMessageDialog(this, "Usuário atualmente desativado, entre em contato com a gerência!");
                         return;
                     }
 
                     Usuario usuarioValidado = usuarioEncontrado;
-                    JOptionPane.showMessageDialog(this, "Bem vindo a bordo, " + usuarioValidado.getNomeUsuario() + "!");
+                    JOptionPane.showMessageDialog(this, "Bem vindo, " + usuarioValidado.getNomeUsuario() + "!");
                     new MenuInicial(usuarioValidado);
                     this.dispose();
 
                 } else {
-                    JOptionPane.showMessageDialog(this, "Pare de tentar invedir contas!!");
+                    JOptionPane.showMessageDialog(this, "Usuário ou senha incorretos!!");
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Quem é voce?");
+                JOptionPane.showMessageDialog(this, "Usuário ou senha incorretos!!");
             }
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Crachá deve conter apenas Numeros");

@@ -2,256 +2,174 @@ package Telas;
 
 import DAO.UsuarioDao;
 import Model.Usuario;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Optional;
 
 public class FuncionariosCadastro extends JFrame {
     private JPanel main;
-    private JButton CadastrarBT;
-    private JButton EditarBT;
-    private JButton ConsultarBT;
-    private JButton ExcluirBT;
+    private JButton BTCancelar;
+    private JButton BTCadastrar;
     private JLabel identificacaoLabel;
     private JLabel cadUsuarioLabel;
     private JLabel emailLabel;
     private JLabel telefoneLabel;
-    private JLabel cargoLabel;
-    private JLabel estadoLabel;
     private JLabel cadSenhaLabel;
     private JLabel TitleLabel;
     private JTextField TFnumeroId;
     private JTextField TFnomeUsuario;
     private JTextField TFemail;
     private JTextField TFtelefone;
-    private JTextField TFcargo;
-    private JTextField TFsenha;
-    private JTextField TFestado;
-    private JPanel panel1;
-    private JLabel usuarioCracha;
-    private JTextField usuarioTF;
-    private JLabel senhaLabel;
-    private JPasswordField senhaTF;
+    private JPasswordField TFsenha;
+    private JComboBox<String> CBCargo;
+    private JComboBox<String> comboBox1;
+    private JLabel cargoLabel;
+    private JLabel estadoLabel;
 
+    private Optional<Usuario> usuarioLogado;
+    private Optional<Usuario> usuarioEditar;
 
     public FuncionariosCadastro() {
+        this(Optional.empty(), Optional.empty());
+    }
+
+    public FuncionariosCadastro(Optional<Usuario> usuarioLogado, Optional<Usuario> usuarioEditar) {
+        this.usuarioLogado = usuarioLogado;
+        this.usuarioEditar = usuarioEditar;
+
         setContentPane(main);
+        setTitle(usuarioEditar.isPresent() ? "Editar Usuário" : "Cadastro de Usuário");
+        setSize(500, 650);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
 
-        CadastrarBT.addActionListener(e -> cadastrarFuncionario());
-        EditarBT.addActionListener(e -> editarFuncionario());
-        ConsultarBT.addActionListener(e -> consultarFuncionario());
-        ExcluirBT.addActionListener(e -> excluirFuncionario());
+        configurarInterface();
+
+        BTCadastrar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                salvarFuncionario();
+            }
+        });
+
+        BTCancelar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+
+        setVisible(true);
     }
 
-    private void cadastrarFuncionario() {
+    private void configurarInterface() {
+        CBCargo.addItem("0 - Administrador");
+        CBCargo.addItem("1 - Funcionário");
 
-        try {
+        comboBox1.addItem("0 - Desativado");
+        comboBox1.addItem("1 - Ativo");
+        comboBox1.addItem("2 - Pendente");
 
-            Usuario usuario = new Usuario();
+        if (usuarioEditar.isPresent()) {
+            Usuario u = usuarioEditar.get();
+            TitleLabel.setText("Editar Usuário");
+            BTCadastrar.setText("Salvar Alterações");
 
-            usuario.setNumIdentificacao(Integer.parseInt(TFnumeroId.getText()));
-            usuario.setNomeUsuario(TFnomeUsuario.getText());
-            usuario.setEmail(TFemail.getText());
-            usuario.setTelefone(TFtelefone.getText());
-            usuario.setCargo(Integer.parseInt(TFcargo.getText()));
-            usuario.setSenha(TFsenha.getText());
-            usuario.setEstado(Integer.parseInt(TFestado.getText()));
+            TFnumeroId.setText(String.valueOf(u.getNumIdentificacao()));
+            TFnomeUsuario.setText(u.getNomeUsuario());
+            TFemail.setText(u.getEmail());
+            TFtelefone.setText(u.getTelefone() != null ? u.getTelefone() : "");
 
-            UsuarioDao dao = new UsuarioDao();
+            CBCargo.setSelectedIndex(u.getCargo() == 0 ? 0 : 1);
+            comboBox1.setSelectedIndex(u.getEstado());
 
-            boolean cadastro = dao.cadastrarUsuario(usuario);
-
-            if (cadastro) {
-
-                JOptionPane.showMessageDialog(this,
-                        "Funcionário cadastrado com sucesso!");
-
-                limparCampos();
-
-            } else {
-
-                JOptionPane.showMessageDialog(this,
-                        "Não foi possível cadastrar o funcionário.");
-
-            }
-
-        } catch (NumberFormatException ex) {
-
-            JOptionPane.showMessageDialog(this,
-                    "Número de identificação, cargo ou estado inválidos.");
-
-        } catch (Exception ex) {
-
-            JOptionPane.showMessageDialog(this,
-                    "Erro: " + ex.getMessage());
-
+            CBCargo.setVisible(true);
+            comboBox1.setVisible(true);
+            if (cargoLabel != null) cargoLabel.setVisible(true);
+            if (estadoLabel != null) estadoLabel.setVisible(true);
+        } else {
+            CBCargo.setVisible(false);
+            comboBox1.setVisible(false);
+            if (cargoLabel != null) cargoLabel.setVisible(false);
+            if (estadoLabel != null) estadoLabel.setVisible(false);
         }
     }
 
-    private void editarFuncionario() {
-
+    private void salvarFuncionario() {
         try {
+            String crachaText = TFnumeroId.getText().trim();
+            String nome = TFnomeUsuario.getText().trim();
+            String email = TFemail.getText().trim();
+            String telefone = TFtelefone.getText().trim();
+            String senhaStr = new String(TFsenha.getPassword());
 
-            int cracha = Integer.parseInt(TFnumeroId.getText());
+            if (crachaText.isEmpty() || nome.isEmpty() || email.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Preencha todos os campos obrigatórios (Crachá, Nome e E-mail).", "Aviso", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
             UsuarioDao dao = new UsuarioDao();
 
-            Optional<Usuario> usuarioEncontrado = dao.buscarPorCracha(cracha);
+            if (usuarioEditar.isPresent()) {
+                Usuario u = usuarioEditar.get();
+                u.setNumIdentificacao(Integer.parseInt(crachaText));
+                u.setNomeUsuario(nome);
+                u.setEmail(email);
+                u.setTelefone(telefone);
+                u.setCargo(CBCargo.getSelectedIndex());
+                int novoEstado = comboBox1.getSelectedIndex();
+                Long idAdmin = usuarioLogado.get().getIdUsuario();
 
-            if (usuarioEncontrado.isPresent()) {
+                boolean sucesso = dao.editarUsuario(u, idAdmin);
 
-                Usuario usuario = usuarioEncontrado.get();
+                if (sucesso) {
+                    dao.changeState(novoEstado, u.getIdUsuario(), idAdmin);
 
-                usuario.setNomeUsuario(TFnomeUsuario.getText());
-                usuario.setEmail(TFemail.getText());
-                usuario.setTelefone(TFtelefone.getText());
-                usuario.setCargo(Integer.parseInt(TFcargo.getText()));
+                    if (!senhaStr.isEmpty()) {
+                        String senhaHash = BCrypt.hashpw(senhaStr, BCrypt.gensalt());
+                        dao.forcarNovaSenha(senhaHash, u.getIdUsuario(), idAdmin);
+                    }
 
-                // Altere este valor para o ID do usuário logado no sistema
-                Long usuarioLogado = usuario.getIdUsuario();
-
-                boolean editou = dao.editarUsuario(usuario, usuarioLogado);
-
-                if (editou) {
-
-                    JOptionPane.showMessageDialog(this,
-                            "Funcionário editado com sucesso!");
-
-                    limparCampos();
-
+                    JOptionPane.showMessageDialog(this, "Usuário atualizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                    dispose();
                 } else {
-
-                    JOptionPane.showMessageDialog(this,
-                            "Não foi possível editar o funcionário.");
-
+                    JOptionPane.showMessageDialog(this, "Erro ao atualizar usuário na base de dados.", "Erro", JOptionPane.ERROR_MESSAGE);
                 }
 
             } else {
-
-                JOptionPane.showMessageDialog(this,
-                        "Funcionário não encontrado.");
-
-            }
-
-        } catch (NumberFormatException ex) {
-
-            JOptionPane.showMessageDialog(this,
-                    "Número de identificação ou cargo inválido.");
-
-        } catch (Exception ex) {
-
-            JOptionPane.showMessageDialog(this,
-                    "Erro: " + ex.getMessage());
-
-        }
-    }
-
-    private void consultarFuncionario() {
-
-        try {
-
-            int cracha = Integer.parseInt(TFnumeroId.getText());
-
-            UsuarioDao dao = new UsuarioDao();
-
-            Optional<Usuario> usuarioEncontrado = dao.buscarPorCracha(cracha);
-
-            if (usuarioEncontrado.isPresent()) {
-
-                Usuario usuario = usuarioEncontrado.get();
-
-                TFnomeUsuario.setText(usuario.getNomeUsuario());
-                TFemail.setText(usuario.getEmail());
-                TFtelefone.setText(usuario.getTelefone());
-                TFcargo.setText(String.valueOf(usuario.getCargo()));
-                TFsenha.setText(usuario.getSenha());
-                TFestado.setText(String.valueOf(usuario.getEstado()));
-
-                JOptionPane.showMessageDialog(this,
-                        "Funcionário encontrado!");
-
-            } else {
-
-                JOptionPane.showMessageDialog(this,
-                        "Funcionário não encontrado.");
-
-            }
-
-        } catch (NumberFormatException ex) {
-
-            JOptionPane.showMessageDialog(this,
-                    "Número de identificação inválido.");
-
-        } catch (Exception ex) {
-
-            JOptionPane.showMessageDialog(this,
-                    "Erro: " + ex.getMessage());
-
-        }
-    }
-
-    private void excluirFuncionario() {
-
-        try {
-
-            int cracha = Integer.parseInt(TFnumeroId.getText());
-
-            UsuarioDao dao = new UsuarioDao();
-
-            Optional<Usuario> usuarioEncontrado = dao.buscarPorCracha(cracha);
-
-            if (usuarioEncontrado.isPresent()) {
-
-                Usuario usuario = usuarioEncontrado.get();
-
-                // ID do usuário que está realizando a ação
-                Long usuarioLogado = usuario.getIdUsuario();
-
-                // 0 = Desativado
-                boolean desativou = dao.changeState(0, usuario.getIdUsuario(), usuarioLogado);
-
-                if (desativou) {
-
-                    JOptionPane.showMessageDialog(this,
-                            "Funcionário desativado com sucesso!");
-
-                    limparCampos();
-
-                } else {
-
-                    JOptionPane.showMessageDialog(this,
-                            "Não foi possível desativar o funcionário.");
-
+                if (senhaStr.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "A senha é obrigatória para novos cadastros.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                    return;
                 }
 
-            } else {
+                Usuario usuario = new Usuario();
+                usuario.setNumIdentificacao(Integer.parseInt(crachaText));
+                usuario.setNomeUsuario(nome);
+                usuario.setEmail(email);
+                usuario.setTelefone(telefone);
+                usuario.setCargo(1);
+                usuario.setEstado(2);
 
-                JOptionPane.showMessageDialog(this,
-                        "Funcionário não encontrado.");
+                String senhaHash = BCrypt.hashpw(senhaStr, BCrypt.gensalt());
+                usuario.setSenha(senhaHash);
 
+                boolean cadastro = dao.cadastrarUsuario(usuario);
+
+                if (cadastro) {
+                    JOptionPane.showMessageDialog(this, "Cadastro realizado com sucesso! Aguarde a aprovação do administrador.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Não foi possível cadastrar. Verifique se o crachá ou e-mail já existem no sistema.", "Erro", JOptionPane.ERROR_MESSAGE);
+                }
             }
 
         } catch (NumberFormatException ex) {
-
-            JOptionPane.showMessageDialog(this,
-                    "Número de identificação inválido.");
-
+            JOptionPane.showMessageDialog(this, "O Número do Crachá deve conter apenas números.", "Erro", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
-
-            JOptionPane.showMessageDialog(this,
-                    "Erro ao desativar: " + ex.getMessage());
-
+            JOptionPane.showMessageDialog(this, "Erro ao guardar: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-
-    private void limparCampos() {
-        TFnumeroId.setText("");
-        TFnomeUsuario.setText("");
-        TFemail.setText("");
-        TFtelefone.setText("");
-        TFcargo.setText("");
-        TFsenha.setText("");
-        TFestado.setText("");
     }
 }

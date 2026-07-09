@@ -14,7 +14,7 @@ import java.util.Optional;
 public class UsuarioDao {
 
     public boolean cadastrarUsuario(Usuario usuario) {
-        String sql = "INSERT INTO Usuario (numIdentificacao, nomeUsuario, email, cargo, senha) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Usuario (numIdentificacao, nomeUsuario, email, cargo, estado, senha) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -22,7 +22,8 @@ public class UsuarioDao {
             stmt.setString(2, usuario.getNomeUsuario());
             stmt.setString(3, usuario.getEmail());
             stmt.setInt(4, usuario.getCargo());
-            stmt.setString(5, usuario.getSenha());
+            stmt.setInt(5, usuario.getEstado());
+            stmt.setString(6, usuario.getSenha());
             stmt.executeUpdate();
 
             return true;
@@ -203,37 +204,98 @@ public class UsuarioDao {
         return usuariosFiltrados;
     }
 
-
     public boolean checarSenha(String plainPassword, String storedHash) {
         return BCrypt.checkpw(plainPassword, storedHash);
     }
 
-
-
-    public boolean mudarSenha(String senhaNova, String senhaAntiga, Long idUsuario) {
-        Optional<Usuario> usuarioOpt = buscarPorId(idUsuario);
-        String senhaHash;
-
-        if (usuarioOpt.isPresent()) {
-            Usuario usuarioEncontrado = usuarioOpt.get();
-            if (checarSenha(senhaAntiga, usuarioEncontrado.getSenha())) {
-                senhaHash = BCrypt.hashpw(senhaNova, BCrypt.gensalt());
-            }else return false;
-        }else return false;
-
+    public boolean forcarNovaSenha(String senhaHashNova, Long idAlvo, Long idAdminLogado) {
         String sql = "UPDATE Usuario SET senha = ?, updateID = ? WHERE idUsuario = ?";
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, senhaHash);
-            stmt.setLong(2, idUsuario);  // Para o LOG
-            stmt.setLong(3, idUsuario);  // Para o WHERE
+            stmt.setString(1, senhaHashNova);
+            stmt.setLong(2, idAdminLogado);
+            stmt.setLong(3, idAlvo);
             stmt.executeUpdate();
-
             return true;
         } catch (SQLException e) {
-            System.out.println("Erro: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("Erro ao forçar redefinição de senha: " + e.getMessage());
             return false;
+        }
+    }
+
+    public int alterarSenha(String senhaNova, String senhaAntiga, Long idUsuario) {
+        String sqlBusca = "SELECT senha, numero_tentativas, ultima_tentativa FROM Usuario WHERE idUsuario = ?";
+        String hashBanco = null;
+        int tentativas = 0;
+        java.time.LocalDateTime ultimaTentativa = null;
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sqlBusca)) {
+            stmt.setLong(1, idUsuario);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    hashBanco = rs.getString("senha");
+                    tentativas = rs.getInt("numero_tentativas");
+                    java.sql.Timestamp ts = rs.getTimestamp("ultima_tentativa");
+                    if (ts != null) {
+                        ultimaTentativa = ts.toLocalDateTime();
+                    }
+                } else {
+                    return 0;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro na busca de segurança: " + e.getMessage());
+            return -2;
+        }
+
+        java.time.LocalDateTime agora = java.time.LocalDateTime.now();
+        boolean emTempoDeBloqueio = false;
+
+        if (ultimaTentativa != null) {
+            long minutosPassados = java.time.Duration.between(ultimaTentativa, agora).toMinutes();
+            if (minutosPassados < 30) {
+                emTempoDeBloqueio = true;
+            } else {
+                tentativas = 0;
+            }
+        }
+
+        if (emTempoDeBloqueio && tentativas >= 5) {
+            return -1;
+        }
+
+        boolean senhaCorreta = BCrypt.checkpw(senhaAntiga, hashBanco);
+
+        if (senhaCorreta) {
+            String senhaNovaHash = BCrypt.hashpw(senhaNova, BCrypt.gensalt());
+            String sqlUpdate = "UPDATE Usuario SET senha = ?, numero_tentativas = 0, ultima_tentativa = NULL, updateID = ? WHERE idUsuario = ?";
+
+            try (Connection conn = Conexao.conectar();
+                 PreparedStatement stmt = conn.prepareStatement(sqlUpdate)) {
+                stmt.setString(1, senhaNovaHash);
+                stmt.setLong(2, idUsuario);
+                stmt.setLong(3, idUsuario);
+                stmt.executeUpdate();
+                return 1;
+            } catch (SQLException e) {
+                System.out.println("Erro ao gravar nova senha: " + e.getMessage());
+                return -2;
+            }
+        } else {
+            tentativas++;
+            String sqlFail = "UPDATE Usuario SET numero_tentativas = ?, ultima_tentativa = ? WHERE idUsuario = ?";
+
+            try (Connection conn = Conexao.conectar();
+                 PreparedStatement stmt = conn.prepareStatement(sqlFail)) {
+                stmt.setInt(1, tentativas);
+                stmt.setTimestamp(2, java.sql.Timestamp.valueOf(agora));
+                stmt.setLong(3, idUsuario);
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                System.out.println("Erro ao registrar falha de segurança: " + e.getMessage());
+            }
+            return 0;
         }
     }
 
